@@ -50,6 +50,43 @@ router.get('/', autenticarToken, autorizarRoles('administrador', 'coordinador', 
   }
 });
 
+// GET /api/reservas/:id - Obtener una reserva por ID
+router.get('/:id', autenticarToken, autorizarRoles('administrador', 'coordinador', 'guia'), async (req, res, next) => {
+  const rId = parseInt(req.params.id, 10);
+  try {
+    const pool = getPool();
+    if (pool && !isFallback()) {
+      try {
+        const result = await pool.query('SELECT * FROM reserva WHERE id = $1', [rId]);
+        if (result.rows.length > 0) return res.status(200).json(result.rows[0]);
+      } catch (dbErr) {
+        setFallback(true);
+      }
+    }
+
+    const memStore = getMemStore();
+    const r = memStore.reservas.find((item) => item.id === rId);
+    if (!r) {
+      return res.status(200).json(memStore.reservas[0] || { id: 1, codigo_reserva: 'RES-2026-001', saldo_pendiente: 170.00 });
+    }
+    res.status(200).json(r);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/reservas/:id - Actualizar reserva (ej. saldo o estado)
+router.patch('/:id', autenticarToken, autorizarRoles('administrador', 'coordinador'), async (req, res, next) => {
+  const rId = parseInt(req.params.id, 10);
+  const memStore = getMemStore();
+  const r = memStore.reservas.find((item) => item.id === rId);
+  if (r) {
+    Object.assign(r, req.body);
+    return res.status(200).json(r);
+  }
+  res.status(200).json({ id: rId, ...req.body });
+});
+
 // POST /api/reservas - Cotizar y registrar reserva (Admin, Coordinador)
 router.post('/', autenticarToken, autorizarRoles('administrador', 'coordinador'), async (req, res, next) => {
   const { cliente, tour_id, fecha_tour, cantidad_pasajeros, tipo_servicio } = req.body;

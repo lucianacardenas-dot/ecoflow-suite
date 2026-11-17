@@ -14,6 +14,9 @@ const reservasRoutes = require('./routes/reservas');
 const auditoriaRoutes = require('./routes/auditoria');
 const pasajerosRoutes = require('./routes/pasajeros');
 const asistenciasRoutes = require('./routes/asistencias');
+const incidentesRoutes = require('./routes/incidentes');
+const consumosRoutes = require('./routes/consumos');
+const salidasRoutes = require('./routes/salidas');
 
 const app = express();
 
@@ -37,6 +40,9 @@ app.use('/api/reservas', reservasRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
 app.use('/api/pasajeros', pasajerosRoutes);
 app.use('/api/asistencias', asistenciasRoutes);
+app.use('/api/incidentes', incidentesRoutes);
+app.use('/api', consumosRoutes);
+app.use('/api', salidasRoutes);
 
 // 4. Manejador de rutas no encontradas (404)
 app.use((req, res) => {
