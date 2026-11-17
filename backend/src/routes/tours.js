@@ -3,15 +3,20 @@
 // =============================================================================
 const express = require('express');
 const router = express.Router();
-const { getPool, getMemStore, isFallback } = require('../config/db');
+const { getPool, getMemStore, isFallback, setFallback } = require('../config/db');
 
 // Listar todos los tours activos
 router.get('/', async (req, res, next) => {
   try {
     const pool = getPool();
     if (pool && !isFallback()) {
-      const result = await pool.query('SELECT * FROM tour WHERE activo = TRUE ORDER BY id ASC');
-      return res.status(200).json(result.rows);
+      try {
+        const result = await pool.query('SELECT * FROM tour WHERE activo = TRUE ORDER BY id ASC');
+        return res.status(200).json(result.rows);
+      } catch (dbErr) {
+        console.warn('[TOURS] Falló consulta a PostgreSQL, usando fallback:', dbErr.message);
+        setFallback(true);
+      }
     }
 
     const memStore = getMemStore();
@@ -28,18 +33,23 @@ router.get('/:id', async (req, res, next) => {
   try {
     const pool = getPool();
     if (pool && !isFallback()) {
-      const result = await pool.query('SELECT * FROM tour WHERE id = $1', [tourId]);
-      if (result.rows.length === 0) {
-        return res.status(404).json({
-          error: {
-            codigo: 'TOUR_NO_ENCONTRADO',
-            mensaje: `El tour con ID ${tourId} no existe.`,
-            detalles: [],
-            timestamp: new Date().toISOString()
-          }
-        });
+      try {
+        const result = await pool.query('SELECT * FROM tour WHERE id = $1', [tourId]);
+        if (result.rows.length === 0) {
+          return res.status(404).json({
+            error: {
+              codigo: 'TOUR_NO_ENCONTRADO',
+              mensaje: `El tour con ID ${tourId} no existe.`,
+              detalles: [],
+              timestamp: new Date().toISOString()
+            }
+          });
+        }
+        return res.status(200).json(result.rows[0]);
+      } catch (dbErr) {
+        console.warn('[TOURS] Falló consulta a PostgreSQL, usando fallback:', dbErr.message);
+        setFallback(true);
       }
-      return res.status(200).json(result.rows[0]);
     }
 
     const memStore = getMemStore();

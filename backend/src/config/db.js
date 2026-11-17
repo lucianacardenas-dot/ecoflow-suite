@@ -112,7 +112,7 @@ const memStore = {
   auditoria: []
 };
 
-function initDb() {
+async function initDb() {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {
     console.log('[DB] No DATABASE_URL configurada. Usando almacén en memoria para desarrollo.');
@@ -123,13 +123,24 @@ function initDb() {
   try {
     pool = new Pool({
       connectionString: dbUrl,
-      connectionTimeoutMillis: 3000
+      connectionTimeoutMillis: 1500
     });
 
     pool.on('error', (err) => {
       console.warn('[DB] Error en pool de PostgreSQL:', err.message);
       useFallback = true;
     });
+
+    // Probar conexión de forma no bloqueante
+    pool.query('SELECT 1')
+      .then(() => {
+        console.log('[DB] Conexión establecida exitosamente con PostgreSQL 16.');
+        useFallback = false;
+      })
+      .catch((err) => {
+        console.warn(`[DB] PostgreSQL no está disponible (${err.message}). Activando almacén en memoria.`);
+        useFallback = true;
+      });
   } catch (err) {
     console.warn('[DB] Falló inicialización de PostgreSQL. Usando fallback en memoria.');
     useFallback = true;
@@ -152,5 +163,6 @@ module.exports = {
   checkConnection,
   getPool: () => pool,
   getMemStore: () => memStore,
-  isFallback: () => useFallback
+  isFallback: () => useFallback,
+  setFallback: (val) => { useFallback = val; }
 };

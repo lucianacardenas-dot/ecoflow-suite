@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { getPool, getMemStore, isFallback } = require('../config/db');
+const { getPool, getMemStore, isFallback, setFallback } = require('../config/db');
 const { registrarAuditoria } = require('../services/auditService');
 const { autenticarToken } = require('../middlewares/auth');
 
@@ -34,18 +34,26 @@ router.post('/login', async (req, res, next) => {
 
     const pool = getPool();
     if (pool && !isFallback()) {
-      const query = `
-        SELECT u.id, u.nombres, u.apellidos, u.email, u.password_hash, u.activo, r.nombre AS rol
-        FROM usuario u
-        JOIN rol r ON u.rol_id = r.id
-        WHERE LOWER(u.email) = LOWER($1)
-      `;
-      const result = await pool.query(query, [email.trim()]);
-      if (result.rows.length > 0) {
-        usuarioEncontrado = result.rows[0];
-        rolNombre = usuarioEncontrado.rol;
+      try {
+        const query = `
+          SELECT u.id, u.nombres, u.apellidos, u.email, u.password_hash, u.activo, r.nombre AS rol
+          FROM usuario u
+          JOIN rol r ON u.rol_id = r.id
+          WHERE LOWER(u.email) = LOWER($1)
+        `;
+        const result = await pool.query(query, [email.trim()]);
+        if (result.rows.length > 0) {
+          usuarioEncontrado = result.rows[0];
+          rolNombre = usuarioEncontrado.rol;
+        }
+      } catch (dbErr) {
+        console.warn('[AUTH] Error al consultar PostgreSQL, cambiando a fallback:', dbErr.message);
+        setFallback(true);
       }
-    } else {
+    }
+
+    // Si PostgreSQL no está disponible o falló la consulta, usar memStore
+    if (!usuarioEncontrado && isFallback()) {
       const memStore = getMemStore();
       usuarioEncontrado = memStore.usuarios.find(
         (u) => u.email.toLowerCase() === email.trim().toLowerCase()

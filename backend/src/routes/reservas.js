@@ -3,7 +3,7 @@
 // =============================================================================
 const express = require('express');
 const router = express.Router();
-const { getPool, getMemStore, isFallback } = require('../config/db');
+const { getPool, getMemStore, isFallback, setFallback } = require('../config/db');
 const { autenticarToken, autorizarRoles } = require('../middlewares/auth');
 const { registrarAuditoria } = require('../services/auditService');
 
@@ -12,18 +12,23 @@ router.get('/', autenticarToken, autorizarRoles('administrador', 'coordinador', 
   try {
     const pool = getPool();
     if (pool && !isFallback()) {
-      const query = `
-        SELECT r.id, r.codigo_reserva, r.fecha_tour, r.cantidad_pasajeros, r.tipo_servicio,
-               r.monto_total, r.saldo_pendiente, r.estado,
-               t.nombre AS tour_nombre, t.codigo AS tour_codigo,
-               c.nombres AS cliente_nombres, c.apellidos AS cliente_apellidos, c.email AS cliente_email
-        FROM reserva r
-        JOIN tour t ON r.tour_id = t.id
-        JOIN cliente c ON r.cliente_id = c.id
-        ORDER BY r.id DESC
-      `;
-      const result = await pool.query(query);
-      return res.status(200).json(result.rows);
+      try {
+        const query = `
+          SELECT r.id, r.codigo_reserva, r.fecha_tour, r.cantidad_pasajeros, r.tipo_servicio,
+                 r.monto_total, r.saldo_pendiente, r.estado,
+                 t.nombre AS tour_nombre, t.codigo AS tour_codigo,
+                 c.nombres AS cliente_nombres, c.apellidos AS cliente_apellidos, c.email AS cliente_email
+          FROM reserva r
+          JOIN tour t ON r.tour_id = t.id
+          JOIN cliente c ON r.cliente_id = c.id
+          ORDER BY r.id DESC
+        `;
+        const result = await pool.query(query);
+        return res.status(200).json(result.rows);
+      } catch (dbErr) {
+        console.warn('[RESERVAS] Falló consulta a PostgreSQL, usando fallback:', dbErr.message);
+        setFallback(true);
+      }
     }
 
     const memStore = getMemStore();
@@ -84,123 +89,121 @@ router.post('/', autenticarToken, autorizarRoles('administrador', 'coordinador')
   try {
     const pool = getPool();
     if (pool && !isFallback()) {
-      // 2. Consulta y Bloqueo de Capacidad en PostgreSQL
-      const tourRes = await pool.query('SELECT * FROM tour WHERE id = $1 AND activo = TRUE', [tour_id]);
-      if (tourRes.rows.length === 0) {
-        return res.status(404).json({
-          error: {
-            codigo: 'TOUR_NO_ENCONTRADO',
-            mensaje: `El tour con ID ${tour_id} no existe o no está activo.`,
-            detalles: [{ campo: 'tour_id', mensaje: 'ID no válido' }],
-            timestamp: new Date().toISOString()
-          }
-        });
-      }
+      try {
+        const tourRes = await pool.query('SELECT * FROM tour WHERE id = $1 AND activo = TRUE', [tour_id]);
+        if (tourRes.rows.length === 0) {
+          return res.status(404).json({
+            error: {
+              codigo: 'TOUR_NO_ENCONTRADO',
+              mensaje: `El tour con ID ${tour_id} no existe o no está activo.`,
+              detalles: [{ campo: 'tour_id', mensaje: 'ID no válido' }],
+              timestamp: new Date().toISOString()
+            }
+          });
+        }
 
-      const tour = tourRes.rows[0];
+        const tour = tourRes.rows[0];
 
-      // Sumar cupos ya reservados en esa fecha
-      const cuposRes = await pool.query(
-        `SELECT COALESCE(SUM(cantidad_pasajeros), 0) AS ocupados
-         FROM reserva
-         WHERE tour_id = $1 AND fecha_tour = $2 AND estado != 'cancelada'`,
-        [tour_id, fecha_tour]
-      );
-      const ocupados = parseInt(cuposRes.rows[0].ocupados, 10);
-      const disponibles = tour.capacidad_maxima - ocupados;
-
-      if (pax > disponibles) {
-        return res.status(409).json({
-          error: {
-            codigo: 'RESERVA_CAPACIDAD_EXCEDIDA',
-            mensaje: 'La cantidad de pasajeros solicitada supera el aforo disponible del tour.',
-            detalles: [
-              {
-                campo: 'cantidad_pasajeros',
-                mensaje: `Cupos disponibles: ${Math.max(0, disponibles)}. Cantidad solicitada: ${pax}. Aforo total: ${tour.capacidad_maxima}.`
-              }
-            ],
-            timestamp: new Date().toISOString()
-          }
-        });
-      }
-
-      // Crear o buscar cliente
-      let clienteId;
-      const clienteExistente = await pool.query('SELECT id FROM cliente WHERE dni_pasaporte = $1', [cliente.dni_pasaporte]);
-      if (clienteExistente.rows.length > 0) {
-        clienteId = clienteExistente.rows[0].id;
-      } else {
-        const nuevoCli = await pool.query(
-          `INSERT INTO cliente (dni_pasaporte, nombres, apellidos, email, telefono)
-           VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-          [cliente.dni_pasaporte, cliente.nombres, cliente.apellidos, cliente.email, cliente.telefono || '+51900000000']
+        const cuposRes = await pool.query(
+          `SELECT COALESCE(SUM(cantidad_pasajeros), 0) AS ocupados
+           FROM reserva
+           WHERE tour_id = $1 AND fecha_tour = $2 AND estado != 'cancelada'`,
+          [tour_id, fecha_tour]
         );
-        clienteId = nuevoCli.rows[0].id;
-      }
+        const ocupados = parseInt(cuposRes.rows[0].ocupados, 10);
+        const disponibles = tour.capacidad_maxima - ocupados;
 
-      // Cálculo tarifario
-      const multiplicador = servicio === 'privado' ? 1.4 : 1.0;
-      const precioBase = parseFloat(tour.precio_base);
-      const montoTotal = Number((precioBase * pax * multiplicador).toFixed(2));
-      const codigoReserva = `RES-${Date.now().toString().slice(-6)}`;
+        if (pax > disponibles) {
+          return res.status(409).json({
+            error: {
+              codigo: 'RESERVA_CAPACIDAD_EXCEDIDA',
+              mensaje: 'La cantidad de pasajeros solicitada supera el aforo disponible del tour.',
+              detalles: [
+                {
+                  campo: 'cantidad_pasajeros',
+                  mensaje: `Cupos disponibles: ${Math.max(0, disponibles)}. Cantidad solicitada: ${pax}. Aforo total: ${tour.capacidad_maxima}.`
+                }
+              ],
+              timestamp: new Date().toISOString()
+            }
+          });
+        }
 
-      // Insertar reserva
-      const insertRes = await pool.query(
-        `INSERT INTO reserva (codigo_reserva, cliente_id, tour_id, fecha_tour, cantidad_pasajeros, tipo_servicio, monto_total, saldo_pendiente, estado)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'confirmada') RETURNING id`,
-        [codigoReserva, clienteId, tour_id, fecha_tour, pax, servicio, montoTotal, montoTotal]
-      );
-      const reservaId = insertRes.rows[0].id;
+        let clienteId;
+        const clienteExistente = await pool.query('SELECT id FROM cliente WHERE dni_pasaporte = $1', [cliente.dni_pasaporte]);
+        if (clienteExistente.rows.length > 0) {
+          clienteId = clienteExistente.rows[0].id;
+        } else {
+          const nuevoCli = await pool.query(
+            `INSERT INTO cliente (dni_pasaporte, nombres, apellidos, email, telefono)
+             VALUES ($1, $2, $3, $4, $5) RETURNING id`,
+            [cliente.dni_pasaporte, cliente.nombres, cliente.apellidos, cliente.email, cliente.telefono || '+51900000000']
+          );
+          clienteId = nuevoCli.rows[0].id;
+        }
 
-      // Crear tokens de pasajeros
-      const pasajerosResp = [];
-      for (let i = 1; i <= pax; i++) {
-        const tokenFicha = `tok-med-${reservaId}-${i}-${Math.random().toString(36).substring(2, 8)}`;
-        const pNombres = i === 1 ? cliente.nombres : `Acompañante ${i}`;
-        const pApellidos = i === 1 ? cliente.apellidos : cliente.apellidos;
+        const multiplicador = servicio === 'privado' ? 1.4 : 1.0;
+        const precioBase = parseFloat(tour.precio_base);
+        const montoTotal = Number((precioBase * pax * multiplicador).toFixed(2));
+        const codigoReserva = `RES-${Date.now().toString().slice(-6)}`;
 
-        const pasInsert = await pool.query(
-          `INSERT INTO pasajero (reserva_id, dni_pasaporte, nombres, apellidos, es_menor, token_ficha, estado_ficha)
-           VALUES ($1, $2, $3, $4, FALSE, $5, 'pendiente') RETURNING id`,
-          [reservaId, i === 1 ? cliente.dni_pasaporte : null, pNombres, pApellidos, tokenFicha]
+        const insertRes = await pool.query(
+          `INSERT INTO reserva (codigo_reserva, cliente_id, tour_id, fecha_tour, cantidad_pasajeros, tipo_servicio, monto_total, saldo_pendiente, estado)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'confirmada') RETURNING id`,
+          [codigoReserva, clienteId, tour_id, fecha_tour, pax, servicio, montoTotal, montoTotal]
         );
+        const reservaId = insertRes.rows[0].id;
 
-        pasajerosResp.push({
-          id: pasInsert.rows[0].id,
-          nombres: `${pNombres} ${pApellidos}`,
-          token_ficha: tokenFicha,
-          estado_ficha: 'pendiente'
+        const pasajerosResp = [];
+        for (let i = 1; i <= pax; i++) {
+          const tokenFicha = `tok-med-${reservaId}-${i}-${Math.random().toString(36).substring(2, 8)}`;
+          const pNombres = i === 1 ? cliente.nombres : `Acompañante ${i}`;
+          const pApellidos = cliente.apellidos;
+
+          const pasInsert = await pool.query(
+            `INSERT INTO pasajero (reserva_id, dni_pasaporte, nombres, apellidos, es_menor, token_ficha, estado_ficha)
+             VALUES ($1, $2, $3, $4, FALSE, $5, 'pendiente') RETURNING id`,
+            [reservaId, i === 1 ? cliente.dni_pasaporte : null, pNombres, pApellidos, tokenFicha]
+          );
+
+          pasajerosResp.push({
+            id: pasInsert.rows[0].id,
+            nombres: `${pNombres} ${pApellidos}`,
+            token_ficha: tokenFicha,
+            estado_ficha: 'pendiente'
+          });
+        }
+
+        await registrarAuditoria({
+          usuarioId: req.usuario ? req.usuario.id : null,
+          accion: 'RESERVA_CONFIRMADA',
+          tablaAfectada: 'reserva',
+          registroId: reservaId,
+          ipOrigen: ip,
+          resultado: 'EXITO',
+          detalles: `Reserva ${codigoReserva} creada para ${pax} pasajeros. Tour ID: ${tour_id}. Total: USD ${montoTotal}`
         });
+
+        return res.status(201).json({
+          id: reservaId,
+          codigo_reserva: codigoReserva,
+          tour_id: parseInt(tour_id, 10),
+          tour_nombre: tour.nombre,
+          fecha_tour,
+          cantidad_pasajeros: pax,
+          tipo_servicio: servicio,
+          monto_total: montoTotal,
+          saldo_pendiente: montoTotal,
+          estado: 'confirmada',
+          pasajeros: pasajerosResp
+        });
+      } catch (dbErr) {
+        console.warn('[RESERVAS] Falló operación en PostgreSQL, usando fallback:', dbErr.message);
+        setFallback(true);
       }
-
-      // Auditoría inmutable
-      await registrarAuditoria({
-        usuarioId: req.usuario ? req.usuario.id : null,
-        accion: 'RESERVA_CONFIRMADA',
-        tablaAfectada: 'reserva',
-        registroId: reservaId,
-        ipOrigen: ip,
-        resultado: 'EXITO',
-        detalles: `Reserva ${codigoReserva} creada para ${pax} pasajeros. Tour ID: ${tour_id}. Total: USD ${montoTotal}`
-      });
-
-      return res.status(201).json({
-        id: reservaId,
-        codigo_reserva: codigoReserva,
-        tour_id: parseInt(tour_id, 10),
-        tour_nombre: tour.nombre,
-        fecha_tour,
-        cantidad_pasajeros: pax,
-        tipo_servicio: servicio,
-        monto_total: montoTotal,
-        saldo_pendiente: montoTotal,
-        estado: 'confirmada',
-        pasajeros: pasajerosResp
-      });
     }
 
-    // LÓGICA DE FALLBACK EN MEMORIA (SI POSTGRESQL ESTÁ OFFLINE)
+    // LÓGICA DE FALLBACK EN MEMORIA
     const memStore = getMemStore();
     const tour = memStore.tours.find((t) => t.id === parseInt(tour_id, 10) && t.activo);
     if (!tour) {
@@ -214,7 +217,6 @@ router.post('/', autenticarToken, autorizarRoles('administrador', 'coordinador')
       });
     }
 
-    // Capacidad en memoria
     const reservasFecha = memStore.reservas.filter(
       (r) => r.tour_id === tour.id && r.fecha_tour === fecha_tour && r.estado !== 'cancelada'
     );
@@ -285,7 +287,6 @@ router.post('/', autenticarToken, autorizarRoles('administrador', 'coordinador')
 
     memStore.reservas.push(nuevaReserva);
 
-    // Auditoría inmutable
     await registrarAuditoria({
       usuarioId: req.usuario ? req.usuario.id : null,
       accion: 'RESERVA_CONFIRMADA',
