@@ -12,6 +12,8 @@ const authRoutes = require('./routes/auth');
 const toursRoutes = require('./routes/tours');
 const reservasRoutes = require('./routes/reservas');
 const auditoriaRoutes = require('./routes/auditoria');
+const pasajerosRoutes = require('./routes/pasajeros');
+const asistenciasRoutes = require('./routes/asistencias');
 
 const app = express();
 
@@ -33,6 +35,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tours', toursRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
+app.use('/api/pasajeros', pasajerosRoutes);
+app.use('/api/asistencias', asistenciasRoutes);
 
 // 4. Manejador de rutas no encontradas (404)
 app.use((req, res) => {
