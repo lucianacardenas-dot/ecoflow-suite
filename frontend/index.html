@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoFlow Suite - Gestión Logística para Ecoturismo</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- PANTALLA DE INICIO DE SESIÓN (LOGIN SIMULADO CON SELECCIÓN DE ROLES) -->
+  <div id="login-overlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo-badge" style="display:inline-block; margin-bottom: 10px;">ECOFLOW</div>
+        <h2>Iniciar Sesión</h2>
+        <p style="color: #64748B; font-size: 13px;">Plataforma Operativa de Ecoturismo y Aventura</p>
+      </div>
+
+      <div id="login-alert" style="display:none;" class="alert-box alert-danger">
+        <div>
+          <div class="alert-title" id="login-alert-title">Error de autenticación</div>
+          <div id="login-alert-msg">Verifique sus datos.</div>
+        </div>
+      </div>
+
+      <!-- Selector Rápido de Rol Demostrativo (Lab 13) -->
+      <label style="font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block;">Seleccione perfil de prueba:</label>
+      <div class="role-selector">
+        <div class="role-pill selected" data-email="coordinador@ecoflow.pe" data-role="coordinador">
+          Coordinador
+        </div>
+        <div class="role-pill" data-email="guia.marcos@ecoflow.pe" data-role="guia">
+          Guía de Campo
+        </div>
+        <div class="role-pill" data-email="admin@ecoflow.pe" data-role="administrador">
+          Administrador
+        </div>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label>Correo Electrónico:</label>
+          <input type="email" id="login-email" class="form-control" value="coordinador@ecoflow.pe" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label>Contraseña (Mínimo 10 caracteres - RC-01):</label>
+          <input type="password" id="login-password" class="form-control" value="EcoFlow2026!#" required>
+        </div>
+        <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%;">
+          <span>Ingresar a la Plataforma</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL -->
+  <div class="app-container">
+    
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-badge">EF</div>
+        <div class="sidebar-title">
+          <h1>EcoFlow Suite</h1>
+          <p>Ecotrack Manager v1.0</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Principal</div>
+        <a class="nav-item active" data-view="dashboard">
+          <span>📊 Dashboard General</span>
+        </a>
+
+        <div class="nav-section-title">Procesos Operativos</div>
+        <a class="nav-item" data-view="ficha-medica" data-roles="administrador,coordinador">
+          <span>🩺 P1: Ficha Médica & Salud</span>
+          <span class="nav-badge">RF-01</span>
+        </a>
+        <a class="nav-item" data-view="reservas" data-roles="administrador,coordinador">
+          <span>📝 P2: Cotización & Reservas</span>
+          <span class="nav-badge">RF-03</span>
+        </a>
+        <a class="nav-item" data-view="salidas" data-roles="administrador,coordinador">
+          <span>🧭 P3: Salidas & Guías</span>
+          <span class="nav-badge">RF-04</span>
+        </a>
+        <a class="nav-item" data-view="equipos" data-roles="administrador,coordinador,guia">
+          <span>🎒 P4: Inventario QR</span>
+          <span class="nav-badge">RF-06</span>
+        </a>
+        <a class="nav-item" data-view="proveedores" data-roles="administrador,coordinador">
+          <span>🚌 P5: Órdenes Proveedores</span>
+          <span class="nav-badge">RF-08</span>
+        </a>
+        <a class="nav-item" data-view="asistencia" data-roles="administrador,coordinador,guia">
+          <span>📋 P6: Check-in de Campo</span>
+          <span class="nav-badge">RF-10</span>
+        </a>
+        <a class="nav-item" data-view="incidentes" data-roles="administrador,coordinador,guia">
+          <span>⚠️ P7: Incidentes & SOS</span>
+          <span class="nav-badge">RF-12</span>
+        </a>
+        <a class="nav-item" data-view="cierre" data-roles="administrador,coordinador,guia">
+          <span>💳 P8: Cobro & Cierre Tour</span>
+          <span class="nav-badge">RF-14</span>
+        </a>
+
+        <div class="nav-section-title nav-admin-only" data-roles="administrador">Seguridad & Auditoría</div>
+        <a class="nav-item nav-admin-only" data-view="auditoria" data-roles="administrador">
+          <span>🔒 Bitácora de Auditoría</span>
+          <span class="nav-badge">RC-02</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar" id="current-user-avatar">C</div>
+          <div class="user-info">
+            <div class="user-name" id="current-user-name">Usuario Conectado</div>
+            <div class="user-role" id="current-user-role">Rol</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 class="page-title" id="page-current-title">Dashboard General</h2>
+          <span class="badge-tag" id="api-status-badge">API Simulada: localhost:3000</span>
+        </div>
+        <div class="topbar-right">
+          <button id="btn-logout" class="btn-logout">
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content-area">
+
+        <!-- ===================================================================
+             VISTA 0: DASHBOARD
+             =================================================================== -->
+        <section id="view-dashboard" class="view-section active">
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-icon green">📅</div>
+              <div>
+                <div class="kpi-value" id="kpi-salidas-count">2</div>
+                <div class="kpi-label">Salidas Programadas Hoy</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon blue">👥</div>
+              <div>
+                <div class="kpi-value" id="kpi-reservas-count">5</div>
+                <div class="kpi-label">Reservas Confirmadas</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon amber">🎒</div>
+              <div>
+                <div class="kpi-value" id="kpi-equipos-count">5</div>
+                <div class="kpi-label">Equipos QR en Almacén</div>
+              </div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-icon red">⚠️</div>
+              <div>
+                <div class="kpi-value" id="kpi-alertas-count">1</div>
+                <div class="kpi-label">Alertas Médicas Activas</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Salidas Operativas en Curso / Programadas</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Código Salida</th>
+                    <th>Tour / Excursión</th>
+                    <th>Fecha</th>
+                    <th>Horario</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-salidas-tbody">
+                  <!-- Llenado dinámico desde JSON Server -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 1: FICHA MÉDICA & SALUD (RF-01, RF-02)
+             =================================================================== -->
+        <section id="view-ficha-medica" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Autogestión de Ficha Médica y Deslinde Legal (RF-01, RF-02)</h3>
+              <span class="badge badge-info">Acceso Tokenizado</span>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 16px;">
+              Los turistas acceden mediante enlace seguro sin contraseñas. El sistema evalúa incompatibilidades cardíacas o respiratorias automáticamente (RF-02).
+            </p>
+
+            <div id="ficha-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="ficha-alert-title">Estado</div>
+                <div id="ficha-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-ficha-medica">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Pasajero Seleccionado:</label>
+                  <select id="ficha-pax-select" class="form-control" required>
+                    <!-- Carga dinámica de pasajeros -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Antecedentes de Salud / Patologías:</label>
+                  <input type="text" id="ficha-antecedentes" class="form-control" placeholder="Ej: Ninguno o Cardiopatia coronaria">
+                  <small style="color: var(--text-muted);">* Pruebe ingresando "Cardiopatia" para verificar la regla de bloqueo RF-02.</small>
+                </div>
+                <div class="form-group">
+                  <label>Alergias Conocidas:</label>
+                  <input type="text" id="ficha-alergias" class="form-control" placeholder="Ej: Picadura de avispa, Penicilina">
+                </div>
+                <div class="form-group">
+                  <label>Requerimiento Dietético (RF-08):</label>
+                  <select id="ficha-dieta" class="form-control">
+                    <option value="ninguno">Ninguno / Estándar</option>
+                    <option value="vegetariano">Vegetariano</option>
+                    <option value="vegano">Vegano</option>
+                    <option value="celiaco">Celíaco (Sin gluten)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Contacto de Emergencia (Nombre):</label>
+                  <input type="text" id="ficha-contacto-nom" class="form-control" value="Roberto Salas" required>
+                </div>
+                <div class="form-group">
+                  <label>Contacto de Emergencia (Teléfono):</label>
+                  <input type="text" id="ficha-contacto-tel" class="form-control" value="+51944556677" required>
+                </div>
+              </div>
+
+              <div style="background-color: #F8FAFC; padding: 12px; border-radius: 6px; margin-bottom: 16px; border: 1px solid var(--border);">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                  <input type="checkbox" id="ficha-deslinde-chk" required checked>
+                  <span>He leído y firmo electrónicamente el Deslinde Legal de Responsabilidad para Actividades de Aventura (RF-01).</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="btn-guardar-ficha">
+                <span>Guardar y Validar Ficha Médica</span>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 2: COTIZACIÓN & RESERVAS (RF-03)
+             =================================================================== -->
+        <section id="view-reservas" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Registrar y Cotizar Nueva Reserva (RF-03)</h3>
+              <span class="badge badge-success">Prevención de Overbooking</span>
+            </div>
+
+            <div id="reserva-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="reserva-alert-title">Notificación</div>
+                <div id="reserva-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-nueva-reserva">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>DNI o Pasaporte del Titular:</label>
+                  <input type="text" id="res-dni" class="form-control" placeholder="45892147" required>
+                </div>
+                <div class="form-group">
+                  <label>Nombres y Apellidos:</label>
+                  <input type="text" id="res-nombres" class="form-control" placeholder="Andrea Salas" required>
+                </div>
+                <div class="form-group">
+                  <label>Correo Electrónico:</label>
+                  <input type="email" id="res-email" class="form-control" placeholder="andrea.salas@gmail.com" required>
+                </div>
+                <div class="form-group">
+                  <label>Teléfono / WhatsApp:</label>
+                  <input type="text" id="res-telefono" class="form-control" placeholder="+51944112233" required>
+                </div>
+                <div class="form-group">
+                  <label>Tour / Excursión:</label>
+                  <select id="res-tour-select" class="form-control" required>
+                    <!-- Carga dinámica -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Fecha de Salida:</label>
+                  <input type="date" id="res-fecha" class="form-control" value="2026-11-20" required>
+                </div>
+                <div class="form-group">
+                  <label>Cantidad de Pasajeros:</label>
+                  <input type="number" id="res-cantidad" class="form-control" min="1" max="30" value="2" required>
+                  <small style="color: var(--text-muted);">* Ingrese 20 para probar el conflicto 409 de aforo excedido (Escenario 2).</small>
+                </div>
+                <div class="form-group">
+                  <label>Modalidad de Servicio:</label>
+                  <select id="res-tipo-servicio" class="form-control">
+                    <option value="compartido">Compartido (Tarifa base)</option>
+                    <option value="privado">Privado (+25% recargo)</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Resumen dinámico de cotización -->
+              <div style="background-color: #F1F5F9; padding: 14px; border-radius: 6px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 12px; color: var(--text-muted);">Importe Total Estimado:</div>
+                  <div style="font-size: 20px; font-weight: 700; color: var(--primary);" id="cotizacion-total-preview">$170.00 USD</div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-crear-reserva">
+                  <span>Confirmar y Guardar Reserva (POST /reservas)</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Listado de Reservas Registradas</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Código</th>
+                    <th>Tour</th>
+                    <th>Fecha</th>
+                    <th>Pax</th>
+                    <th>Total</th>
+                    <th>Saldo</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="reservas-tbody">
+                  <!-- Llenado dinámico -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 3: SALIDAS & ASIGNACIÓN DE GUÍAS (RF-04, RF-05)
+             =================================================================== -->
+        <section id="view-salidas" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Programar Salida y Asignar Guía (RF-04, RF-05)</h3>
+              <span class="badge badge-warning">Validación de Solapamiento</span>
+            </div>
+
+            <div id="salida-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="salida-alert-title">Estado</div>
+                <div id="salida-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-nueva-salida">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Tour:</label>
+                  <select id="salida-tour-select" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Fecha de Salida:</label>
+                  <input type="date" id="salida-fecha" class="form-control" value="2026-11-20" required>
+                </div>
+                <div class="form-group">
+                  <label>Hora de Partida:</label>
+                  <input type="time" id="salida-hora-inicio" class="form-control" value="07:30" required>
+                </div>
+                <div class="form-group">
+                  <label>Hora de Retorno:</label>
+                  <input type="time" id="salida-hora-fin" class="form-control" value="13:00" required>
+                </div>
+                <div class="form-group">
+                  <label>Guía Técnico Asignado:</label>
+                  <select id="salida-guia-select" class="form-control" required>
+                    <!-- Carga dinámica -->
+                  </select>
+                  <small style="color: var(--text-muted);">* La IA valida que no colisione con otra salida y respete 60 min de descanso.</small>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btn-guardar-salida">
+                <span>Programar Salida (POST /salidas)</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Salidas Programadas</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tour</th>
+                    <th>Fecha</th>
+                    <th>Horario</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="salidas-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 4: INVENTARIO QR & DESPACHO (RF-06, RF-07)
+             =================================================================== -->
+        <section id="view-equipos" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Despacho de Equipamiento con Lector QR (RF-06, RF-07)</h3>
+            </div>
+
+            <div id="equipo-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="equipo-alert-title">Estado</div>
+                <div id="equipo-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Salida Operativa Destino:</label>
+                <select id="despacho-salida-select" class="form-control" required></select>
+              </div>
+              <div class="form-group">
+                <label>Código QR Escaneado:</label>
+                <input type="text" id="despacho-qr-input" class="form-control" placeholder="Ej: QR-ARNES-001 o QR-KAYAK-002">
+                <small style="color: var(--text-muted);">* QR-KAYAK-002 está en mantenimiento para probar el bloqueo RF-07.</small>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btn-despachar-equipo">
+              <span>📷 Simular Lectura QR y Despachar</span>
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Inventario Serializado de Equipos</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Código QR</th>
+                    <th>Tipo de Equipo</th>
+                    <th>Marca / Modelo</th>
+                    <th>Estado Actual</th>
+                  </tr>
+                </thead>
+                <tbody id="equipos-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 5: ÓRDENES A PROVEEDORES (RF-08, RF-09)
+             =================================================================== -->
+        <section id="view-proveedores" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Emisión de Órdenes a Proveedores (RF-08, RF-09)</h3>
+              <span class="badge badge-info">Confirmación One-Click</span>
+            </div>
+
+            <div id="proveedor-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="proveedor-alert-title">Estado</div>
+                <div id="proveedor-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-nueva-orden">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Salida:</label>
+                  <select id="orden-salida-select" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Proveedor Aliado:</label>
+                  <select id="orden-proveedor-select" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Total Pax / Asientos:</label>
+                  <input type="number" id="orden-pax" class="form-control" value="3" required>
+                </div>
+                <div class="form-group">
+                  <label>Consolidado de Alergias y Dietas (RF-08):</label>
+                  <input type="text" id="orden-dietas" class="form-control" value="1 menú vegetariano, 2 menú regular sin mariscos." required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btn-emitir-orden">
+                <span>Emitir Orden de Servicio</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Órdenes de Servicio Emitidas</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Nº Orden</th>
+                    <th>Proveedor</th>
+                    <th>Comensales</th>
+                    <th>Dietas / Restricciones</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="ordenes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 6: CHECK-IN Y MANIFIESTO OFFLINE (RF-10, RF-11)
+             =================================================================== -->
+        <section id="view-asistencia" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Control de Asistencia y Manifiesto de Abordaje (RF-10, RF-11)</h3>
+              <div style="display:flex; align-items:center; gap: 8px;">
+                <label style="font-size: 12px; font-weight: 600;">Modo Offline:</label>
+                <input type="checkbox" id="chk-offline-mode">
+              </div>
+            </div>
+
+            <div id="asistencia-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="asistencia-alert-title">Estado</div>
+                <div id="asistencia-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <p style="color: var(--text-muted); margin-bottom: 16px;">
+              Si un pasajero no completó la ficha médica o fue bloqueado por riesgo, el sistema muestra advertencia restrictiva y no permite el abordaje.
+            </p>
+
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Pasajero</th>
+                    <th>Documento</th>
+                    <th>Ficha Médica</th>
+                    <th>Asistencia</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="manifiesto-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 7: INCIDENTES & EMERGENCIA SOS (RF-12, RF-13)
+             =================================================================== -->
+        <section id="view-incidentes" class="view-section">
+          <!-- BOTÓN SOS DE EMERGENCIA MÉDICA CRÍTICA (RF-13) -->
+          <div class="card" style="border: 2px solid var(--danger); background-color: #FFF5F5;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+              <div>
+                <h3 style="color: var(--danger); font-size: 17px; font-weight: 800;">🚨 PROTOCOLO DE EMERGENCIA MÉDICA CRÍTICA (RF-13)</h3>
+                <p style="color: #7F1D1D; font-size: 13px;">Bypassa aprobaciones administrativas en ruta. Cambia la salida a EN_EMERGENCIA de inmediato.</p>
+              </div>
+              <button type="button" class="btn btn-sos" id="btn-activar-sos">
+                <span>⚡ ACTIVAR PROTOCOLO SOS INMEDIATO</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Reporte de Contingencia Operativa en Ruta (RF-12)</h3>
+            </div>
+
+            <div id="incidente-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="incidente-alert-title">Estado</div>
+                <div id="incidente-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-nuevo-incidente">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Salida Afectada:</label>
+                  <select id="inc-salida-select" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Tipo de Incidente:</label>
+                  <select id="inc-tipo-select" class="form-control">
+                    <option value="clima_adverso">Clima Adverso / Crecida</option>
+                    <option value="bloqueo_ruta">Bloqueo o Derrumbe en Ruta</option>
+                    <option value="falla_mecanica">Falla Mecánica de Transporte</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Descripción del Evento:</label>
+                  <input type="text" id="inc-descripcion" class="form-control" placeholder="Ej: Caída de rocas en km 12" required>
+                </div>
+                <div class="form-group">
+                  <label>Propuesta de Ruta Alterna (RF-12):</label>
+                  <input type="text" id="inc-ruta-alterna" class="form-control" placeholder="Ej: Desvío por sendero alto y enlace en punto B" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" id="btn-reportar-incidente">
+                <span>Registrar Contingencia y Notificar a Coordinación</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Historial de Incidentes y Contingencias</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Fecha / Hora</th>
+                    <th>Salida</th>
+                    <th>Tipo</th>
+                    <th>Severidad</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody id="incidentes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 8: CONSUMOS EN RUTA, COBRO & CIERRE (RF-14, RF-15)
+             =================================================================== -->
+        <section id="view-cierre" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Registro de Consumos en Ruta (RF-14: Sin Cobro en Efectivo)</h3>
+            </div>
+
+            <div id="cierre-alert" style="display:none;" class="alert-box">
+              <div>
+                <div class="alert-title" id="cierre-alert-title">Estado</div>
+                <div id="cierre-alert-msg">Mensaje</div>
+              </div>
+            </div>
+
+            <form id="form-nuevo-consumo">
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Reserva / Cuenta del Cliente:</label>
+                  <select id="consumo-reserva-select" class="form-control" required></select>
+                </div>
+                <div class="form-group">
+                  <label>Concepto / Servicio Extra:</label>
+                  <input type="text" id="consumo-desc" class="form-control" placeholder="Ej: Traje térmico extra o Hidratación" required>
+                </div>
+                <div class="form-group">
+                  <label>Cantidad:</label>
+                  <input type="number" id="consumo-cantidad" class="form-control" min="1" value="1" required>
+                </div>
+                <div class="form-group">
+                  <label>Precio Unitario ($ USD):</label>
+                  <input type="number" id="consumo-precio" class="form-control" min="1" step="0.5" value="15.00" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-secondary" id="btn-cargar-consumo">
+                <span>➕ Cargar Consumo a Cuenta de Reserva (RN-8.1)</span>
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Liquidación en Counter y Cierre de Salida (RF-15)</h3>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Seleccione Reserva a Liquidar:</label>
+                <select id="liquidar-reserva-select" class="form-control"></select>
+              </div>
+              <div class="form-group">
+                <label>Monto a Cobrar ($ USD):</label>
+                <input type="number" id="liquidar-monto" class="form-control" value="120.00">
+              </div>
+              <div class="form-group">
+                <label>Método Formal de Pago:</label>
+                <select id="liquidar-metodo" class="form-control">
+                  <option value="tarjeta_credito">Tarjeta de Crédito / Débito</option>
+                  <option value="transferencia">Transferencia Bancaria</option>
+                  <option value="efectivo_counter">Efectivo en Counter</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:flex; gap: 12px; margin-top: 10px;">
+              <button type="button" class="btn btn-primary" id="btn-liquidar-pago">
+                <span>💵 Registrar Pago en Counter</span>
+              </button>
+              <button type="button" class="btn btn-secondary" id="btn-cerrar-tour">
+                <span>🏁 Declarar Salida Cerrada y Enviar Encuesta (RF-15)</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             VISTA 9: AUDITORÍA (SOLO ADMINISTRADOR - RC-02)
+             =================================================================== -->
+        <section id="view-auditoria" class="view-section">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Bitácora Inmutable de Auditoría del Sistema (RC-02)</h3>
+              <span class="badge badge-info">Append-Only</span>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 16px;">
+              Registro de eventos con marca temporal UTC, usuario autenticado, IP y resultado (conforme a los requisitos de ciberseguridad).
+            </p>
+            <div class="table-responsive">
+              <table class="table-custom">
+                <thead>
+                  <tr>
+                    <th>Fecha UTC</th>
+                    <th>Usuario</th>
+                    <th>Operación</th>
+                    <th>Tabla</th>
+                    <th>IP Origen</th>
+                    <th>Resultado</th>
+                    <th>Detalles</th>
+                  </tr>
+                </thead>
+                <tbody id="auditoria-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- SCRIPT PRINCIPAL SPA -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

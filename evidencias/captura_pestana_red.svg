@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="1000" height="650" style="background:#0F172A; font-family:'Segoe UI', Inter, sans-serif;">
+  <!-- Header Chrome DevTools -->
+  <rect x="0" y="0" width="1000" height="40" fill="#1E293B"/>
+  <circle cx="20" cy="20" r="6" fill="#EF4444"/>
+  <circle cx="40" cy="20" r="6" fill="#F59E0B"/>
+  <circle cx="60" cy="20" r="6" fill="#10B981"/>
+  <text x="90" y="25" fill="#94A3B8" font-size="13" font-weight="600">DevTools - localhost:5500 (Network / Fetch/XHR) - EcoFlow Suite Prototipo</text>
+
+  <!-- DevTools Top Bar -->
+  <rect x="0" y="40" width="1000" height="35" fill="#0F172A" stroke="#334155" stroke-width="1"/>
+  <text x="20" y="62" fill="#94A3B8" font-size="12">Elements</text>
+  <text x="90" y="62" fill="#94A3B8" font-size="12">Console</text>
+  <text x="160" y="62" fill="#38BDF8" font-size="12" font-weight="bold">Network</text>
+  <rect x="155" y="72" width="55" height="3" fill="#38BDF8"/>
+  <text x="235" y="62" fill="#94A3B8" font-size="12">Sources</text>
+  <text x="305" y="62" fill="#94A3B8" font-size="12">Application</text>
+
+  <!-- Filter Bar -->
+  <rect x="0" y="75" width="1000" height="35" fill="#1E293B"/>
+  <text x="20" y="97" fill="#E2E8F0" font-size="12">Filter: <tspan fill="#38BDF8">reservas</tspan></text>
+  <rect x="150" y="82" width="60" height="22" rx="4" fill="#0284C7"/>
+  <text x="160" y="97" fill="#FFFFFF" font-size="11" font-weight="600">Fetch/XHR</text>
+  <text x="230" y="97" fill="#64748B" font-size="11">JS</text>
+  <text x="265" y="97" fill="#64748B" font-size="11">CSS</text>
+  <text x="310" y="97" fill="#64748B" font-size="11">Doc</text>
+
+  <!-- Split Screen: Left Table (420px), Right Details (580px) -->
+  <!-- Left Table Header -->
+  <rect x="0" y="110" width="420" height="30" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+  <text x="15" y="130" fill="#94A3B8" font-size="11" font-weight="bold">Name</text>
+  <text x="160" y="130" fill="#94A3B8" font-size="11" font-weight="bold">Status</text>
+  <text x="230" y="130" fill="#94A3B8" font-size="11" font-weight="bold">Type</text>
+  <text x="300" y="130" fill="#94A3B8" font-size="11" font-weight="bold">Initiator</text>
+  <text x="370" y="130" fill="#94A3B8" font-size="11" font-weight="bold">Time</text>
+
+  <!-- Request 1: POST /reservas (Selected) -->
+  <rect x="0" y="140" width="420" height="35" fill="#0369A1" fill-opacity="0.25" stroke="#0284C7" stroke-width="1"/>
+  <text x="15" y="162" fill="#F8FAFC" font-size="12" font-weight="600">reservas</text>
+  <circle cx="150" cy="158" r="4" fill="#10B981"/>
+  <text x="160" y="162" fill="#10B981" font-size="12" font-weight="bold">201 Created</text>
+  <text x="230" y="162" fill="#94A3B8" font-size="11">fetch</text>
+  <text x="300" y="162" fill="#94A3B8" font-size="11">apiClient.js:42</text>
+  <text x="370" y="162" fill="#94A3B8" font-size="11">31 ms</text>
+
+  <!-- Request 2: GET /tours -->
+  <rect x="0" y="175" width="420" height="30" fill="#0F172A"/>
+  <text x="15" y="195" fill="#CBD5E1" font-size="12">tours</text>
+  <circle cx="150" cy="191" r="4" fill="#10B981"/>
+  <text x="160" y="195" fill="#10B981" font-size="11">200 OK</text>
+  <text x="230" y="195" fill="#94A3B8" font-size="11">fetch</text>
+  <text x="300" y="195" fill="#94A3B8" font-size="11">toursService.js:8</text>
+  <text x="370" y="195" fill="#94A3B8" font-size="11">12 ms</text>
+
+  <!-- Request 3: GET /usuarios -->
+  <rect x="0" y="205" width="420" height="30" fill="#1E293B"/>
+  <text x="15" y="225" fill="#CBD5E1" font-size="12">usuarios?email=...</text>
+  <circle cx="150" cy="221" r="4" fill="#10B981"/>
+  <text x="160" y="225" fill="#10B981" font-size="11">200 OK</text>
+  <text x="230" y="225" fill="#94A3B8" font-size="11">fetch</text>
+  <text x="300" y="225" fill="#94A3B8" font-size="11">authService.js:24</text>
+  <text x="370" y="225" fill="#94A3B8" font-size="11">15 ms</text>
+
+  <!-- Right Details Panel -->
+  <rect x="420" y="110" width="580" height="540" fill="#111827" stroke="#334155" stroke-width="1"/>
+
+  <!-- Right Tabs -->
+  <rect x="420" y="110" width="580" height="35" fill="#1F2937"/>
+  <text x="440" y="132" fill="#94A3B8" font-size="12">Headers</text>
+  <text x="510" y="132" fill="#38BDF8" font-size="12" font-weight="bold">Payload</text>
+  <rect x="505" y="142" width="55" height="3" fill="#38BDF8"/>
+  <text x="580" y="132" fill="#94A3B8" font-size="12">Preview</text>
+  <text x="650" y="132" fill="#94A3B8" font-size="12">Response</text>
+  <text x="730" y="132" fill="#94A3B8" font-size="12">Timing</text>
+
+  <!-- General Headers Section -->
+  <text x="440" y="170" fill="#38BDF8" font-size="12" font-weight="bold">▼ General</text>
+  <text x="455" y="190" fill="#94A3B8" font-size="11">Request URL: <tspan fill="#F8FAFC">http://localhost:3000/reservas</tspan></text>
+  <text x="455" y="210" fill="#94A3B8" font-size="11">Request Method: <tspan fill="#F8FAFC">POST</tspan></text>
+  <text x="455" y="230" fill="#94A3B8" font-size="11">Status Code: <tspan fill="#10B981" font-weight="bold">201 Created</tspan></text>
+  <text x="455" y="250" fill="#94A3B8" font-size="11">Remote Address: <tspan fill="#F8FAFC">127.0.0.1:3000</tspan></text>
+
+  <!-- Request Payload JSON (Tree view) -->
+  <text x="440" y="285" fill="#38BDF8" font-size="12" font-weight="bold">▼ Request Payload (application/json)</text>
+  <rect x="440" y="295" width="540" height="200" rx="6" fill="#0B132B" stroke="#1E293B" stroke-width="1"/>
+
+  <text x="455" y="320" fill="#E2E8F0" font-family="monospace" font-size="12">{</text>
+  <text x="475" y="340" fill="#38BDF8" font-family="monospace" font-size="12">"codigo_reserva"</text><text x="615" y="340" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="630" y="340" fill="#34D399" font-family="monospace" font-size="12">"RES-2026-777"</text><text x="745" y="340" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="360" fill="#38BDF8" font-family="monospace" font-size="12">"cliente_id"</text><text x="575" y="360" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="590" y="360" fill="#34D399" font-family="monospace" font-size="12">"cli-1"</text><text x="640" y="360" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="380" fill="#38BDF8" font-family="monospace" font-size="12">"tour_id"</text><text x="545" y="380" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="560" y="380" fill="#34D399" font-family="monospace" font-size="12">"tour-1"</text><text x="625" y="380" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="400" fill="#38BDF8" font-family="monospace" font-size="12">"fecha_tour"</text><text x="575" y="400" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="590" y="400" fill="#34D399" font-family="monospace" font-size="12">"2026-11-20"</text><text x="695" y="400" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="420" fill="#38BDF8" font-family="monospace" font-size="12">"cantidad_pasajeros"</text><text x="645" y="420" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="660" y="420" fill="#FBBF24" font-family="monospace" font-size="12">2</text><text x="675" y="420" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="440" fill="#38BDF8" font-family="monospace" font-size="12">"tipo_servicio"</text><text x="600" y="440" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="615" y="440" fill="#34D399" font-family="monospace" font-size="12">"compartido"</text><text x="720" y="440" fill="#E2E8F0" font-family="monospace" font-size="12">,</text>
+
+  <text x="475" y="460" fill="#38BDF8" font-family="monospace" font-size="12">"monto_total"</text><text x="580" y="460" fill="#E2E8F0" font-family="monospace" font-size="12">: </text><text x="595" y="460" fill="#FBBF24" font-family="monospace" font-size="12">170.00</text>
+
+  <text x="455" y="480" fill="#E2E8F0" font-family="monospace" font-size="12">}</text>
+
+  <!-- Response Status Box -->
+  <rect x="440" y="515" width="540" height="90" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1"/>
+  <text x="455" y="540" fill="#34D399" font-size="13" font-weight="bold">✓ Petición Exitosa (201 Created)</text>
+  <text x="455" y="565" fill="#D1FAE5" font-size="11">El recurso se registró correctamente en la colección "reservas" de db.json en 31 ms.</text>
+  <text x="455" y="585" fill="#A7F3D0" font-size="11">Encabezados: Authorization: Bearer jwt-token-2-1762795... | Content-Type: application/json</text>
+</svg>

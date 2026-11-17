@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 650" width="1000" height="650" style="background:#1E1E1E; font-family:'Consolas', 'Segoe UI', monospace;">
+  <!-- Window Header -->
+  <rect x="0" y="0" width="1000" height="40" fill="#2D2D2D"/>
+  <circle cx="20" cy="20" r="6" fill="#FF5F56"/>
+  <circle cx="40" cy="20" r="6" fill="#FFBD2E"/>
+  <circle cx="60" cy="20" r="6" fill="#27C93F"/>
+  <text x="90" y="25" fill="#CCCCCC" font-family="'Segoe UI', sans-serif" font-size="13">pgAdmin 4 - Query Tool: proyecto_db (PostgreSQL 16 en localhost:5432) - Pruebas Negativas</text>
+
+  <!-- Left Sidebar (Object Explorer 260px) -->
+  <rect x="0" y="40" width="260" height="610" fill="#252526" stroke="#333333" stroke-width="1"/>
+  <text x="15" y="65" fill="#569CD6" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold">▼ Servers (1)</text>
+  <text x="30" y="90" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="12">▼ PostgreSQL 16</text>
+  <text x="45" y="115" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="12">▼ Databases (1)</text>
+  <text x="60" y="140" fill="#4EC9B0" font-family="'Segoe UI', sans-serif" font-size="12" font-weight="bold">▼ proyecto_db</text>
+  <text x="75" y="165" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="12">▼ Schemas</text>
+  <text x="90" y="190" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="12">▼ public</text>
+  <text x="105" y="215" fill="#CE9178" font-family="'Segoe UI', sans-serif" font-size="12">▼ Tables (22)</text>
+  <text x="120" y="240" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 rol</text>
+  <text x="120" y="260" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 usuario</text>
+  <text x="120" y="280" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 auditoria</text>
+  <text x="120" y="300" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 cliente</text>
+  <text x="120" y="320" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 tour</text>
+  <text x="120" y="340" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 reserva</text>
+  <text x="120" y="360" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 pasajero</text>
+  <text x="120" y="380" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 ficha_medica</text>
+  <text x="120" y="400" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 salida</text>
+  <text x="120" y="420" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 equipo</text>
+  <text x="120" y="440" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 asistencia</text>
+  <text x="120" y="460" fill="#DCDCDC" font-family="'Segoe UI', sans-serif" font-size="11">📋 incidente</text>
+
+  <!-- Query Tool Top Controls -->
+  <rect x="260" y="40" width="740" height="35" fill="#333333"/>
+  <rect x="270" y="46" width="70" height="23" rx="3" fill="#0E639C"/>
+  <text x="282" y="62" fill="#FFFFFF" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">▶ Execute (F5)</text>
+  <text x="360" y="62" fill="#AAAAAA" font-family="'Segoe UI', sans-serif" font-size="11">Connection: postgres@localhost:5432/proyecto_db</text>
+
+  <!-- SQL Editor Area (Top Half: 260px) -->
+  <rect x="260" y="75" width="740" height="260" fill="#1E1E1E"/>
+  
+  <text x="275" y="100" fill="#6A9955">-- =============================================================================</text>
+  <text x="275" y="120" fill="#6A9955">-- ACTIVIDAD 2.5: PRUEBAS NEGATIVAS DE RESTRICCIONES EN POSTGRESQL 16</text>
+  <text x="275" y="140" fill="#6A9955">-- =============================================================================</text>
+
+  <text x="275" y="170" fill="#6A9955">-- 1. Violación de Clave Única (Código QR duplicado en equipo)</text>
+  <text x="275" y="190" fill="#569CD6">INSERT INTO <tspan fill="#4EC9B0">equipo</tspan> (codigo_qr, tipo_equipo, marca_modelo, estado)</text>
+  <text x="275" y="210" fill="#569CD6">VALUES (<tspan fill="#CE9178">'QR-ARNES-001'</tspan>, <tspan fill="#CE9178">'Arnés'</tspan>, <tspan fill="#CE9178">'Petzl'</tspan>, <tspan fill="#CE9178">'disponible'</tspan>);</text>
+
+  <text x="275" y="240" fill="#6A9955">-- 2. Violación de Restricción CHECK (Importe negativo en liquidación)</text>
+  <text x="275" y="260" fill="#569CD6">INSERT INTO <tspan fill="#4EC9B0">pago_liquidacion</tspan> (reserva_id, monto, metodo_pago)</text>
+  <text x="275" y="280" fill="#569CD6">VALUES (1, <tspan fill="#B5CEA8">-150.00</tspan>, <tspan fill="#CE9178">'tarjeta_credito'</tspan>);</text>
+
+  <text x="275" y="310" fill="#6A9955">-- 3. Violación de ON DELETE RESTRICT (Eliminar cliente con reservas vigentes)</text>
+  <text x="275" y="330" fill="#569CD6">DELETE FROM <tspan fill="#4EC9B0">cliente</tspan> WHERE id = 1;</text>
+
+  <!-- Output / Message Console (Bottom Half: 315px) -->
+  <rect x="260" y="335" width="740" height="315" fill="#181818" stroke="#333333" stroke-width="1"/>
+  <rect x="260" y="335" width="740" height="28" fill="#252526"/>
+  <text x="275" y="354" fill="#E7E7E7" font-family="'Segoe UI', sans-serif" font-size="11" font-weight="bold">Messages (Console Output)</text>
+
+  <!-- Error 1 Message -->
+  <text x="275" y="385" fill="#F14C4C" font-size="12" font-weight="bold">ERROR: duplicate key value violates unique constraint "equipo_codigo_qr_key"</text>
+  <text x="275" y="405" fill="#CCCCCC" font-size="11">DETAIL: Key (codigo_qr)=(QR-ARNES-001) already exists.</text>
+  <text x="275" y="425" fill="#808080" font-size="11">SQL state: 23505 | Statement: INSERT INTO equipo ...</text>
+
+  <!-- Divider -->
+  <line x1="275" y1="440" x2="980" y2="440" stroke="#333333" stroke-width="1"/>
+
+  <!-- Error 2 Message -->
+  <text x="275" y="465" fill="#F14C4C" font-size="12" font-weight="bold">ERROR: new row for relation "pago_liquidacion" violates check constraint "pago_liquidacion_monto_check"</text>
+  <text x="275" y="485" fill="#CCCCCC" font-size="11">DETAIL: Failing row contains (9, 1, -150.00, tarjeta_credito, 2026-11-20 12:00:00+00, null).</text>
+  <text x="275" y="505" fill="#808080" font-size="11">SQL state: 23514 | Check expression: (monto &gt; 0)</text>
+
+  <!-- Divider -->
+  <line x1="275" y1="520" x2="980" y2="520" stroke="#333333" stroke-width="1"/>
+
+  <!-- Error 3 Message -->
+  <text x="275" y="545" fill="#F14C4C" font-size="12" font-weight="bold">ERROR: update or delete on table "cliente" violates foreign key constraint "fk_reserva_cliente" on table "reserva"</text>
+  <text x="275" y="565" fill="#CCCCCC" font-size="11">DETAIL: Key (id)=(1) is still referenced from table "reserva".</text>
+  <text x="275" y="585" fill="#808080" font-size="11">SQL state: 23001 | Action: ON DELETE RESTRICT</text>
+
+  <rect x="275" y="605" width="705" height="30" rx="4" fill="#0E639C" fill-opacity="0.2" stroke="#1177BB" stroke-width="1"/>
+  <text x="285" y="625" fill="#4FC1FF" font-family="'Segoe UI', sans-serif" font-size="11">✓ Total: 4 pruebas negativas ejecutadas con éxito. Las restricciones de BD protegieron la integridad de los datos.</text>
+</svg>

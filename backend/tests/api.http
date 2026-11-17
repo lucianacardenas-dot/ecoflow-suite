@@ -1,0 +1,117 @@
+# =============================================================================
+# EcoFlow Suite - Pruebas de Endpoints con REST Client (VS Code)
+# Archivo: backend/tests/api.http
+# =============================================================================
+
+@baseUrl = http://localhost:4000/api
+
+### 1. Endpoint de Salud (Iteración 0)
+GET {{baseUrl}}/health
+
+### 2. Login como Coordinador (Iteración 1)
+# @name loginCoordinador
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "coordinador@ecoflow.pe",
+  "password": "EcoFlow2026!#"
+}
+
+### 3. Login como Guía (Para probar permisos restringidos)
+# @name loginGuia
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "guia.marcos@ecoflow.pe",
+  "password": "EcoFlow2026!#"
+}
+
+### 4. Login como Administrador (Para consultar auditoría)
+# @name loginAdmin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@ecoflow.pe",
+  "password": "EcoFlow2026!#"
+}
+
+### 5. Consultar Catálogo de Tours
+GET {{baseUrl}}/tours
+Authorization: Bearer {{loginCoordinador.response.body.$.token}}
+
+### 6. Listar Reservas Comerciales
+GET {{baseUrl}}/reservas
+Authorization: Bearer {{loginCoordinador.response.body.$.token}}
+
+### 7. CP-01: Registrar una Reserva Válida (201 Created)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{loginCoordinador.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "cliente": {
+    "dni_pasaporte": "70852963",
+    "nombres": "Mateo",
+    "apellidos": "Gómez Rivas",
+    "email": "mateo.gomez@gmail.com",
+    "telefono": "+51955223344"
+  },
+  "tour_id": 1,
+  "fecha_tour": "2026-12-15",
+  "cantidad_pasajeros": 4,
+  "tipo_servicio": "compartido"
+}
+
+### 8. CP-02: Conflicto de Aforo / Overbooking (Debe responder 409 Conflict)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{loginCoordinador.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "cliente": {
+    "dni_pasaporte": "99887766",
+    "nombres": "Turista",
+    "apellidos": "Excedente",
+    "email": "exceso@gmail.com",
+    "telefono": "+51911223344"
+  },
+  "tour_id": 1,
+  "fecha_tour": "2026-12-15",
+  "cantidad_pasajeros": 50,
+  "tipo_servicio": "compartido"
+}
+
+### 9. CP-03: Datos Incompletos (Debe responder 400 Bad Request)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{loginCoordinador.response.body.$.token}}
+Content-Type: application/json
+
+{
+  "tour_id": 1,
+  "fecha_tour": "2026-12-15"
+}
+
+### 10. Prueba Seguridad 1: Acceso sin Token (Debe responder 401 Unauthorized)
+POST {{baseUrl}}/reservas
+Content-Type: application/json
+
+{
+  "tour_id": 1,
+  "cantidad_pasajeros": 2
+}
+
+### 11. Prueba Seguridad 2: Rol No Autorizado (Debe responder 403 Forbidden)
+# El rol 'guia' NO tiene permiso para ver auditoría
+GET {{baseUrl}}/auditoria
+Authorization: Bearer {{loginGuia.response.body.$.token}}
+
+### 12. Prueba Seguridad 3: Token Alterado o Inválido (Debe responder 401)
+GET {{baseUrl}}/reservas
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.token-trucado-invalido
+
+### 13. Consultar Auditoría Inmutable (Solo Administrador - 200 OK)
+GET {{baseUrl}}/auditoria
+Authorization: Bearer {{loginAdmin.response.body.$.token}}

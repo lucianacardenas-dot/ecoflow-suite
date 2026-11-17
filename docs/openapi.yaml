@@ -1,0 +1,152 @@
+openapi: 3.0.3
+info:
+  title: EcoFlow Suite REST API
+  description: Contrato de comunicación frontend-backend para EcoFlow Suite (Ecotrack Manager).
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: API Simulada (JSON Server / Desarrollo Local)
+  - url: https://api.ecoflow.pe/v1
+    description: Servidor Central de Producción (AWS EC2)
+
+paths:
+  /auth/login:
+    post:
+      summary: Inicio de sesión de usuarios internos
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: coordinador@ecoflow.pe
+                password:
+                  type: string
+                  example: Password123!#
+      responses:
+        '200':
+          description: Autenticación exitosa con token Bearer
+        '401':
+          description: Credenciales incorrectas
+
+  /tours:
+    get:
+      summary: Catálogo maestro de excursiones y aforos
+      responses:
+        '200':
+          description: Lista de tours disponibles
+
+  /reservas:
+    get:
+      summary: Listar reservas comerciales
+      responses:
+        '200':
+          description: Lista de reservas
+    post:
+      summary: Registrar y cotizar reserva (P2)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cliente, tour_id, fecha_tour, cantidad_pasajeros]
+              properties:
+                cliente:
+                  type: object
+                tour_id:
+                  type: integer
+                fecha_tour:
+                  type: string
+                cantidad_pasajeros:
+                  type: integer
+      responses:
+        '201':
+          description: Reserva confirmada
+        '409':
+          description: Conflicto de aforo o regla médica
+
+  /salidas:
+    get:
+      summary: Listar salidas programadas
+      responses:
+        '200':
+          description: Lista de salidas
+    post:
+      summary: Programar salida técnica (P3)
+      responses:
+        '201':
+          description: Salida programada
+
+  /salidas/{id}/guias:
+    post:
+      summary: Asignar guía sin solapamiento (P3)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Guía asignado exitosamente
+        '409':
+          description: Colisión de horario o descanso insuficiente
+
+  /equipos/{codigo_qr}:
+    get:
+      summary: Consultar equipo por código QR (P4)
+      parameters:
+        - name: codigo_qr
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Datos y estado del equipo
+
+  /salidas/{id}/asistencias:
+    post:
+      summary: Registrar check-in presencial en campo (P6)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Asistencia registrada
+        '409':
+          description: Pasajero sin ficha médica o deslinde firmado
+
+  /salidas/{id}/incidentes:
+    post:
+      summary: Reportar incidente o emergencia médica SOS (P7)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Incidente reportado o emergencia activada
+
+  /salidas/{id}/consumos:
+    post:
+      summary: Registrar consumos adicionales en ruta (P8)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Consumo registrado sin cobro en efectivo

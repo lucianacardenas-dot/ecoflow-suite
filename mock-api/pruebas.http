@@ -1,0 +1,118 @@
+### ============================================================================
+### PRUEBAS DE ENDPOINTS CON REST CLIENT - ECOFLOW SUITE
+### URL Base: http://localhost:3000
+### ============================================================================
+
+### 1. Consultar usuarios internos de prueba
+GET http://localhost:3000/usuarios
+
+### 2. Listar catálogo de tours disponibles (P2)
+GET http://localhost:3000/tours
+
+### 3. Listar reservas registradas
+GET http://localhost:3000/reservas
+
+### 4. Filtrar reservas confirmadas
+GET http://localhost:3000/reservas?estado=confirmada
+
+### 5. Registrar una nueva reserva comercial (POST /reservas - P2)
+POST http://localhost:3000/reservas
+Content-Type: application/json
+
+{
+  "id": "res-99",
+  "codigo_reserva": "RES-2026-999",
+  "cliente_id": "cli-1",
+  "tour_id": "tour-1",
+  "fecha_tour": "2026-11-25",
+  "cantidad_pasajeros": 2,
+  "tipo_servicio": "compartido",
+  "monto_total": 170.00,
+  "saldo_pendiente": 170.00,
+  "estado": "confirmada"
+}
+
+### 6. Consultar pasajeros y token de ficha médica (P1)
+GET http://localhost:3000/pasajeros?token_ficha=tok-med-andrea-01
+
+### 7. Consultar ficha médica completada (P1)
+GET http://localhost:3000/fichas_medicas?pasajero_id=pax-1
+
+### 8. Listar salidas programadas (P3)
+GET http://localhost:3000/salidas
+
+### 9. Consultar inventario de equipos y estado QR (P4)
+GET http://localhost:3000/equipos
+
+### 10. Despachar equipo técnico a una salida (POST /despachos_equipos - P4)
+POST http://localhost:3000/despachos_equipos
+Content-Type: application/json
+
+{
+  "id": "des-99",
+  "salida_id": "sal-1",
+  "equipo_id": "eq-3",
+  "codigo_qr": "QR-CASCO-001",
+  "fecha_despacho": "2026-11-20T07:15:00.000Z",
+  "estado_retorno": null
+}
+
+### 11. Consultar órdenes de servicio a proveedores (P5)
+GET http://localhost:3000/ordenes_servicio
+
+### 12. Confirmar orden de servicio vía enlace one-click (PATCH /ordenes_servicio - P5)
+PATCH http://localhost:3000/ordenes_servicio/ord-2
+Content-Type: application/json
+
+{
+  "estado": "confirmada",
+  "confirmado_en": "2026-11-20T09:00:00.000Z",
+  "ip_confirmacion": "190.237.14.88"
+}
+
+### 13. Registrar asistencia presencial check-in (POST /asistencias - P6)
+POST http://localhost:3000/asistencias
+Content-Type: application/json
+
+{
+  "id": "ast-99",
+  "salida_id": "sal-1",
+  "pasajero_id": "pax-2",
+  "pasajero_nombre": "Gustavo Salas",
+  "estado_asistencia": "presente",
+  "hora_marcado": "2026-11-20T07:22:00.000Z",
+  "sincronizado": true
+}
+
+### 14. Reportar incidente en ruta (POST /incidentes - P7)
+POST http://localhost:3000/incidentes
+Content-Type: application/json
+
+{
+  "id": "inc-99",
+  "salida_id": "sal-1",
+  "tipo_incidente": "bloqueo_ruta",
+  "severidad": "leve",
+  "descripcion": "Paso de ganado en sendero km 4.",
+  "ruta_alterna_propuesta": "Espera de 10 min en punto seguro.",
+  "estado_aprobacion": "aprobada",
+  "reportado_en": "2026-11-20T09:15:00.000Z"
+}
+
+### 15. Registrar consumo adicional en ruta (POST /consumos_adicionales - P8)
+POST http://localhost:3000/consumos_adicionales
+Content-Type: application/json
+
+{
+  "id": "cns-99",
+  "salida_id": "sal-1",
+  "reserva_id": "res-1",
+  "descripcion": "Bastón de trekking telescópico extra",
+  "cantidad": 1,
+  "precio_unitario": 10.00,
+  "subtotal": 10.00,
+  "registrado_en": "2026-11-20T09:30:00.000Z"
+}
+
+### 16. Consultar bitácora de auditoría (Admin)
+GET http://localhost:3000/auditoria

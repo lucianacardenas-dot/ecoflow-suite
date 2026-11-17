@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 680" width="1000" height="680" style="background:#F8FAFC; font-family:'Segoe UI', Inter, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1000" height="50" fill="#1B4D3E"/>
+  <text x="30" y="32" fill="#FFFFFF" font-size="16" font-weight="bold">EcoFlow Suite - Diagrama Entidad-Relación Conceptual y Físico (PostgreSQL 16)</text>
+  <text x="830" y="32" fill="#94A3B8" font-size="12">Laboratorio Nº 13 - Tecsup</text>
+
+  <!-- Entity 1: CLIENTE -->
+  <g transform="translate(40, 80)" filter="url(#shadow)">
+    <rect width="200" height="150" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="200" height="30" rx="6" fill="#0284C7"/>
+    <rect y="20" width="200" height="10" fill="#0284C7"/>
+    <text x="100" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">CLIENTE</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 <tspan font-weight="bold">id</tspan>: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0F172A" font-size="11">✦ <tspan font-weight="bold">dni_pasaporte</tspan>: VARCHAR (UK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• nombres: VARCHAR</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• email: VARCHAR (UK)</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• telefono: VARCHAR</text>
+  </g>
+
+  <!-- Entity 2: RESERVA -->
+  <g transform="translate(370, 80)" filter="url(#shadow)">
+    <rect width="250" height="170" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="250" height="30" rx="6" fill="#1B4D3E"/>
+    <rect y="20" width="250" height="10" fill="#1B4D3E"/>
+    <text x="125" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">RESERVA</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 <tspan font-weight="bold">id</tspan>: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0F172A" font-size="11">✦ <tspan font-weight="bold">codigo_reserva</tspan>: VARCHAR (UK)</text>
+    <text x="15" y="90" fill="#0284C7" font-size="11">🔗 <tspan font-weight="bold">cliente_id</tspan>: INTEGER (FK)</text>
+    <text x="15" y="110" fill="#0284C7" font-size="11">🔗 <tspan font-weight="bold">tour_id</tspan>: INTEGER (FK)</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• cantidad_pasajeros: INT</text>
+    <text x="15" y="150" fill="#0F172A" font-size="11">• monto_total / saldo: NUMERIC</text>
+  </g>
+
+  <!-- Entity 3: TOUR -->
+  <g transform="translate(730, 80)" filter="url(#shadow)">
+    <rect width="230" height="150" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="230" height="30" rx="6" fill="#0284C7"/>
+    <rect y="20" width="230" height="10" fill="#0284C7"/>
+    <text x="115" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">TOUR</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 <tspan font-weight="bold">id</tspan>: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0F172A" font-size="11">✦ codigo: VARCHAR (UK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• nombre: VARCHAR</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• capacidad_maxima: INT</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• precio_base: NUMERIC</text>
+  </g>
+
+  <!-- Entity 4: PASAJERO -->
+  <g transform="translate(40, 280)" filter="url(#shadow)">
+    <rect width="200" height="150" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="200" height="30" rx="6" fill="#1B4D3E"/>
+    <rect y="20" width="200" height="10" fill="#1B4D3E"/>
+    <text x="100" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">PASAJERO</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0284C7" font-size="11">🔗 reserva_id: INTEGER (FK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• nombres / apellidos: VARCHAR</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">✦ token_ficha: VARCHAR (UK)</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• estado_ficha: VARCHAR</text>
+  </g>
+
+  <!-- Entity 5: FICHA_MEDICA -->
+  <g transform="translate(40, 480)" filter="url(#shadow)">
+    <rect width="200" height="140" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="200" height="30" rx="6" fill="#F59E0B"/>
+    <rect y="20" width="200" height="10" fill="#F59E0B"/>
+    <text x="100" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">FICHA_MEDICA (1:1)</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0284C7" font-size="11">🔗 pasajero_id: INT (FK, UK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• antecedentes_salud: TEXT</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• deslinde_firmado: BOOLEAN</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• es_apto: BOOLEAN</text>
+  </g>
+
+  <!-- Entity 6: SALIDA -->
+  <g transform="translate(370, 310)" filter="url(#shadow)">
+    <rect width="250" height="140" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="250" height="30" rx="6" fill="#1B4D3E"/>
+    <rect y="20" width="250" height="10" fill="#1B4D3E"/>
+    <text x="125" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">SALIDA OPERATIVA</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0284C7" font-size="11">🔗 tour_id: INTEGER (FK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• fecha: DATE</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• hora_salida / retorno: TIME</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• estado: programada/emergencia</text>
+  </g>
+
+  <!-- Entity 7: GUIA -->
+  <g transform="translate(730, 310)" filter="url(#shadow)">
+    <rect width="230" height="130" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="230" height="30" rx="6" fill="#0284C7"/>
+    <rect y="20" width="230" height="10" fill="#0284C7"/>
+    <text x="115" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">GUIA TÉCNICO</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0284C7" font-size="11">🔗 usuario_id: INTEGER (FK, UK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">✦ codigo_licencia: VARCHAR (UK)</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• minutos_descanso_min: INT</text>
+  </g>
+
+  <!-- Entity 8: EQUIPO QR -->
+  <g transform="translate(370, 500)" filter="url(#shadow)">
+    <rect width="250" height="120" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="250" height="30" rx="6" fill="#0284C7"/>
+    <rect y="20" width="250" height="10" fill="#0284C7"/>
+    <text x="125" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">EQUIPO (INVENTARIO QR)</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0F172A" font-size="11">✦ codigo_qr: VARCHAR (UK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• tipo_equipo: VARCHAR</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• estado: disponible/mantenimiento</text>
+  </g>
+
+  <!-- Entity 9: AUDITORIA -->
+  <g transform="translate(730, 490)" filter="url(#shadow)">
+    <rect width="230" height="140" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1"/>
+    <rect width="230" height="30" rx="6" fill="#EF4444"/>
+    <rect y="20" width="230" height="10" fill="#EF4444"/>
+    <text x="115" y="20" fill="#FFFFFF" font-size="12" font-weight="bold" text-anchor="middle">AUDITORIA (RC-02)</text>
+    <text x="15" y="50" fill="#0F172A" font-size="11">🔑 id: INTEGER (PK)</text>
+    <text x="15" y="70" fill="#0284C7" font-size="11">🔗 usuario_id: INTEGER (FK)</text>
+    <text x="15" y="90" fill="#0F172A" font-size="11">• accion: VARCHAR</text>
+    <text x="15" y="110" fill="#0F172A" font-size="11">• ip_origen: VARCHAR</text>
+    <text x="15" y="130" fill="#0F172A" font-size="11">• creado_en: TIMESTAMP UTC</text>
+  </g>
+
+  <!-- Connectors Lines -->
+  <!-- Cliente -> Reserva -->
+  <line x1="240" y1="140" x2="370" y2="140" stroke="#0284C7" stroke-width="2" stroke-dasharray="4"/>
+  <text x="290" y="130" fill="#0284C7" font-size="10" font-weight="bold">1 : N</text>
+
+  <!-- Tour -> Reserva -->
+  <line x1="730" y1="140" x2="620" y2="140" stroke="#0284C7" stroke-width="2" stroke-dasharray="4"/>
+  <text x="660" y="130" fill="#0284C7" font-size="10" font-weight="bold">1 : N</text>
+
+  <!-- Reserva -> Pasajero -->
+  <line x1="370" y1="190" x2="140" y2="280" stroke="#1B4D3E" stroke-width="2"/>
+  <text x="250" y="225" fill="#1B4D3E" font-size="10" font-weight="bold">1 : N</text>
+
+  <!-- Pasajero -> Ficha Medica -->
+  <line x1="140" y1="430" x2="140" y2="480" stroke="#F59E0B" stroke-width="2"/>
+  <text x="150" y="460" fill="#F59E0B" font-size="10" font-weight="bold">1 : 1</text>
+
+  <!-- Tour -> Salida -->
+  <line x1="800" y1="230" x2="620" y2="340" stroke="#1B4D3E" stroke-width="2"/>
+  <text x="700" y="275" fill="#1B4D3E" font-size="10" font-weight="bold">1 : N</text>
+
+  <!-- Salida <-> Guia (Asignacion) -->
+  <line x1="620" y1="360" x2="730" y2="360" stroke="#0284C7" stroke-width="2"/>
+  <text x="660" y="350" fill="#0284C7" font-size="10" font-weight="bold">N : M</text>
+
+  <!-- Salida <-> Equipo (Despacho) -->
+  <line x1="495" y1="450" x2="495" y2="500" stroke="#0284C7" stroke-width="2"/>
+  <text x="505" y="480" fill="#0284C7" font-size="10" font-weight="bold">N : M</text>
+</svg>

@@ -1,0 +1,15 @@
+# Dependencias de Node
+node_modules/
+package-lock.json
+
+# Entorno y variables secretas
+.env
+.env.local
+
+# Logs y temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+.vscode/

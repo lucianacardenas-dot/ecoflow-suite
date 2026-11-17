@@ -1,0 +1,464 @@
+{
+  "usuarios": [
+    {
+      "id": "usr-1",
+      "nombres": "Carlos Valdivia",
+      "email": "admin@ecoflow.pe",
+      "rol": "administrador",
+      "activo": true
+    },
+    {
+      "id": "usr-2",
+      "nombres": "Luciana Paredes",
+      "email": "coordinador@ecoflow.pe",
+      "rol": "coordinador",
+      "activo": true
+    },
+    {
+      "id": "usr-3",
+      "nombres": "Marcos Quispe",
+      "email": "guia.marcos@ecoflow.pe",
+      "rol": "guia",
+      "activo": true
+    }
+  ],
+  "clientes": [
+    {
+      "id": "cli-1",
+      "dni_pasaporte": "45892147",
+      "nombres": "Andrea",
+      "apellidos": "Salas Morales",
+      "email": "andrea.salas@gmail.com",
+      "telefono": "+51944112233"
+    },
+    {
+      "id": "cli-2",
+      "dni_pasaporte": "70852963",
+      "nombres": "Mateo",
+      "apellidos": "Gómez Rivas",
+      "email": "mateo.gomez@gmail.com",
+      "telefono": "+51955223344"
+    },
+    {
+      "id": "cli-3",
+      "dni_pasaporte": "P-ESP849201",
+      "nombres": "Javier",
+      "apellidos": "Fernández Gil",
+      "email": "javier.fernandez@viajes.es",
+      "telefono": "+34600112233"
+    },
+    {
+      "id": "cli-4",
+      "dni_pasaporte": "P-USA992014",
+      "nombres": "Sarah",
+      "apellidos": "Jenkins",
+      "email": "sjenkins@adventure.com",
+      "telefono": "+14155552671"
+    },
+    {
+      "id": "cli-5",
+      "dni_pasaporte": "10293847",
+      "nombres": "Renato",
+      "apellidos": "Cornejo Paz",
+      "email": "renato.cornejo@outlook.com",
+      "telefono": "+51966334455"
+    }
+  ],
+  "tours": [
+    {
+      "id": "tour-1",
+      "codigo": "TR-RAFT-01",
+      "nombre": "Rafting Cañón del Río Colca Clase IV",
+      "nivel_dificultad": "extremo",
+      "capacidad_maxima": 16,
+      "ratio_guia_turista": 8,
+      "precio_base": 85.00,
+      "activo": true
+    },
+    {
+      "id": "tour-2",
+      "codigo": "TR-TREK-02",
+      "nombre": "Trekking Glaciar Ausangate y Laguna Verde",
+      "nivel_dificultad": "alto",
+      "capacidad_maxima": 12,
+      "ratio_guia_turista": 6,
+      "precio_base": 120.00,
+      "activo": true
+    },
+    {
+      "id": "tour-3",
+      "codigo": "TR-KAYK-03",
+      "nombre": "Kayak Lago Sagrado e Islas Flotantes",
+      "nivel_dificultad": "moderado",
+      "capacidad_maxima": 20,
+      "ratio_guia_turista": 10,
+      "precio_base": 65.00,
+      "activo": true
+    },
+    {
+      "id": "tour-4",
+      "codigo": "TR-CANY-04",
+      "nombre": "Canyoning y Rappel Cascadas Doradas",
+      "nivel_dificultad": "alto",
+      "capacidad_maxima": 14,
+      "ratio_guia_turista": 7,
+      "precio_base": 95.00,
+      "activo": true
+    },
+    {
+      "id": "tour-5",
+      "codigo": "TR-BICI-05",
+      "nombre": "Downhill BTT Valle Sagrado",
+      "nivel_dificultad": "moderado",
+      "capacidad_maxima": 18,
+      "ratio_guia_turista": 9,
+      "precio_base": 70.00,
+      "activo": true
+    }
+  ],
+  "reglas_medicas": [
+    {
+      "id": "reg-1",
+      "tour_id": "tour-1",
+      "condicion_medica": "cardiopatia",
+      "es_excluyente": true,
+      "descripcion": "Incompatible con esfuerzo agudo y cambios de presión en rápidos clase IV."
+    },
+    {
+      "id": "reg-2",
+      "tour_id": "tour-1",
+      "condicion_medica": "epilepsia",
+      "es_excluyente": true,
+      "descripcion": "Riesgo vital inminente ante caída al caudal del río."
+    },
+    {
+      "id": "reg-3",
+      "tour_id": "tour-2",
+      "condicion_medica": "hipertension_pulmonar",
+      "es_excluyente": true,
+      "descripcion": "Grave riesgo de edema agudo sobre los 4,000 msnm."
+    }
+  ],
+  "guias": [
+    {
+      "id": "gui-1",
+      "usuario_id": "usr-3",
+      "nombres": "Marcos Quispe",
+      "codigo_licencia": "LIC-AGMT-2024-001",
+      "especialidad": "rafting_aguas_bravas",
+      "minutos_descanso_min": 60,
+      "activo": true
+    },
+    {
+      "id": "gui-2",
+      "usuario_id": "usr-4",
+      "nombres": "Diana Flores",
+      "codigo_licencia": "LIC-AGMT-2024-002",
+      "especialidad": "alta_montana",
+      "minutos_descanso_min": 60,
+      "activo": true
+    },
+    {
+      "id": "gui-3",
+      "usuario_id": "usr-5",
+      "nombres": "Rodrigo Chávez",
+      "codigo_licencia": "LIC-AGMT-2024-003",
+      "especialidad": "trekking_canotaje",
+      "minutos_descanso_min": 60,
+      "activo": true
+    }
+  ],
+  "reservas": [
+    {
+      "id": "res-1",
+      "codigo_reserva": "RES-2026-001",
+      "cliente_id": "cli-1",
+      "tour_id": "tour-1",
+      "fecha_tour": "2026-11-20",
+      "cantidad_pasajeros": 2,
+      "tipo_servicio": "compartido",
+      "monto_total": 170.00,
+      "saldo_pendiente": 0.00,
+      "estado": "confirmada"
+    },
+    {
+      "id": "res-2",
+      "codigo_reserva": "RES-2026-002",
+      "cliente_id": "cli-2",
+      "tour_id": "tour-2",
+      "fecha_tour": "2026-11-20",
+      "cantidad_pasajeros": 2,
+      "tipo_servicio": "compartido",
+      "monto_total": 240.00,
+      "saldo_pendiente": 120.00,
+      "estado": "confirmada"
+    },
+    {
+      "id": "res-3",
+      "codigo_reserva": "RES-2026-003",
+      "cliente_id": "cli-3",
+      "tour_id": "tour-3",
+      "fecha_tour": "2026-11-21",
+      "cantidad_pasajeros": 4,
+      "tipo_servicio": "privado",
+      "monto_total": 320.00,
+      "saldo_pendiente": 320.00,
+      "estado": "pendiente"
+    }
+  ],
+  "pasajeros": [
+    {
+      "id": "pax-1",
+      "reserva_id": "res-1",
+      "dni_pasaporte": "45892147",
+      "nombres": "Andrea Salas",
+      "token_ficha": "tok-med-andrea-01",
+      "estado_ficha": "completada"
+    },
+    {
+      "id": "pax-2",
+      "reserva_id": "res-1",
+      "dni_pasaporte": "71234567",
+      "nombres": "Gustavo Salas",
+      "token_ficha": "tok-med-gustavo-02",
+      "estado_ficha": "completada"
+    },
+    {
+      "id": "pax-3",
+      "reserva_id": "res-2",
+      "dni_pasaporte": "70852963",
+      "nombres": "Mateo Gómez",
+      "token_ficha": "tok-med-mateo-03",
+      "estado_ficha": "bloqueada_riesgo"
+    },
+    {
+      "id": "pax-4",
+      "reserva_id": "res-2",
+      "dni_pasaporte": "72345678",
+      "nombres": "Carla Méndez",
+      "token_ficha": "tok-med-carla-04",
+      "estado_ficha": "completada"
+    },
+    {
+      "id": "pax-5",
+      "reserva_id": "res-3",
+      "dni_pasaporte": "P-USA992014",
+      "nombres": "Sarah Jenkins",
+      "token_ficha": "tok-med-sarah-05",
+      "estado_ficha": "pendiente"
+    }
+  ],
+  "fichas_medicas": [
+    {
+      "id": "fch-1",
+      "pasajero_id": "pax-1",
+      "antecedentes_salud": "Ninguno",
+      "alergias": "Picadura de avispa",
+      "requerimiento_dietetico": "vegetariano",
+      "contacto_emergencia_nombre": "Roberto Salas",
+      "contacto_emergencia_telefono": "+51944556677",
+      "deslinde_firmado": true,
+      "es_apto": true
+    },
+    {
+      "id": "fch-2",
+      "pasajero_id": "pax-2",
+      "antecedentes_salud": "Miopia",
+      "alergias": "Ninguna",
+      "requerimiento_dietetico": "ninguno",
+      "contacto_emergencia_nombre": "Roberto Salas",
+      "contacto_emergencia_telefono": "+51944556677",
+      "deslinde_firmado": true,
+      "es_apto": true
+    },
+    {
+      "id": "fch-3",
+      "pasajero_id": "pax-3",
+      "antecedentes_salud": "Cardiopatia coronaria tratada",
+      "alergias": "Penicilina",
+      "requerimiento_dietetico": "celiaco",
+      "contacto_emergencia_nombre": "Elena Rivas",
+      "contacto_emergencia_telefono": "+51955667788",
+      "deslinde_firmado": true,
+      "es_apto": false
+    }
+  ],
+  "salidas": [
+    {
+      "id": "sal-1",
+      "tour_id": "tour-1",
+      "tour_nombre": "Rafting Cañón del Río Colca Clase IV",
+      "fecha": "2026-11-20",
+      "hora_salida": "07:30",
+      "hora_retorno": "13:00",
+      "estado": "programada"
+    },
+    {
+      "id": "sal-2",
+      "tour_id": "tour-2",
+      "tour_nombre": "Trekking Glaciar Ausangate y Laguna Verde",
+      "fecha": "2026-11-20",
+      "hora_salida": "06:00",
+      "hora_retorno": "16:00",
+      "estado": "programada"
+    }
+  ],
+  "asignaciones_guias": [
+    {
+      "id": "asg-1",
+      "salida_id": "sal-1",
+      "guia_id": "gui-1",
+      "rol_en_tour": "principal"
+    }
+  ],
+  "equipos": [
+    {
+      "id": "eq-1",
+      "codigo_qr": "QR-ARNES-001",
+      "tipo_equipo": "Arnés de Seguridad",
+      "marca_modelo": "Petzl Corax Pro",
+      "estado": "disponible"
+    },
+    {
+      "id": "eq-2",
+      "codigo_qr": "QR-ARNES-002",
+      "tipo_equipo": "Arnés de Seguridad",
+      "marca_modelo": "Petzl Corax Pro",
+      "estado": "disponible"
+    },
+    {
+      "id": "eq-3",
+      "codigo_qr": "QR-CASCO-001",
+      "tipo_equipo": "Casco de Escalada",
+      "marca_modelo": "Black Diamond Half Dome",
+      "estado": "disponible"
+    },
+    {
+      "id": "eq-4",
+      "codigo_qr": "QR-KAYAK-001",
+      "tipo_equipo": "Kayak Travesía",
+      "marca_modelo": "Dagger Stratos 14.5",
+      "estado": "disponible"
+    },
+    {
+      "id": "eq-5",
+      "codigo_qr": "QR-KAYAK-002",
+      "tipo_equipo": "Kayak Travesía",
+      "marca_modelo": "Dagger Stratos 14.5",
+      "estado": "en_mantenimiento"
+    }
+  ],
+  "despachos_equipos": [
+    {
+      "id": "des-1",
+      "salida_id": "sal-1",
+      "equipo_id": "eq-1",
+      "codigo_qr": "QR-ARNES-001",
+      "fecha_despacho": "2026-11-20T07:10:00.000Z",
+      "estado_retorno": null
+    }
+  ],
+  "proveedores": [
+    {
+      "id": "prov-1",
+      "ruc": "20548963211",
+      "razon_social": "Transportes Cordillera Andina S.A.C.",
+      "tipo_servicio": "transporte",
+      "contacto_nombre": "Manuel Estrada",
+      "email": "operaciones@cordillera.pe",
+      "telefono": "+51981122334"
+    },
+    {
+      "id": "prov-2",
+      "ruc": "20498765432",
+      "razon_social": "Restaurante Campestre Los Pinos",
+      "tipo_servicio": "restaurante",
+      "contacto_nombre": "Alonso Benavides",
+      "email": "lospinos@campo.pe",
+      "telefono": "+51983344556"
+    }
+  ],
+  "ordenes_servicio": [
+    {
+      "id": "ord-1",
+      "numero_orden": "ORD-2026-001",
+      "salida_id": "sal-1",
+      "proveedor_id": "prov-1",
+      "proveedor_nombre": "Transportes Cordillera Andina S.A.C.",
+      "total_comensales_pax": 3,
+      "resumen_dietas": "Transporte Minivan 01 para 2 pax + 1 guía.",
+      "token_confirmacion": "tok-prov-transp-001",
+      "estado": "confirmada"
+    },
+    {
+      "id": "ord-2",
+      "numero_orden": "ORD-2026-002",
+      "salida_id": "sal-1",
+      "proveedor_id": "prov-2",
+      "proveedor_nombre": "Restaurante Campestre Los Pinos",
+      "total_comensales_pax": 3,
+      "resumen_dietas": "1 vegetariano, 2 menú regular sin mariscos.",
+      "token_confirmacion": "tok-prov-rest-002",
+      "estado": "emitida"
+    }
+  ],
+  "asistencias": [
+    {
+      "id": "ast-1",
+      "salida_id": "sal-1",
+      "pasajero_id": "pax-1",
+      "pasajero_nombre": "Andrea Salas",
+      "estado_asistencia": "presente",
+      "hora_marcado": "2026-11-20T07:20:00.000Z",
+      "sincronizado": true
+    }
+  ],
+  "incidentes": [
+    {
+      "id": "inc-1",
+      "salida_id": "sal-1",
+      "tipo_incidente": "clima_adverso",
+      "severidad": "moderada",
+      "descripcion": "Crecida repentina en el sector El Puente por lluvias en cabecera.",
+      "ruta_alterna_propuesta": "Desvío a tramo B por cañón bajo.",
+      "estado_aprobacion": "pendiente",
+      "reportado_en": "2026-11-20T08:45:00.000Z"
+    }
+  ],
+  "consumos_adicionales": [
+    {
+      "id": "cns-1",
+      "salida_id": "sal-1",
+      "reserva_id": "res-1",
+      "descripcion": "Alquiler de traje de neopreno extra térmico",
+      "cantidad": 2,
+      "precio_unitario": 15.00,
+      "subtotal": 30.00,
+      "registrado_en": "2026-11-20T08:10:00.000Z"
+    }
+  ],
+  "pagos_liquidacion": [
+    {
+      "id": "pag-1",
+      "reserva_id": "res-1",
+      "monto": 170.00,
+      "metodo_pago": "tarjeta_credito",
+      "fecha_pago": "2026-11-20T07:00:00.000Z",
+      "referencia_transaccion": "VISA-AUTH-984210"
+    }
+  ],
+  "encuestas_satisfaccion": [],
+  "auditoria": [
+    {
+      "id": "aud-1",
+      "usuario_nombre": "Luciana Paredes",
+      "accion": "RESERVA_CONFIRMADA",
+      "tabla_afectada": "reserva",
+      "registro_id": "res-1",
+      "ip_origen": "192.168.1.45",
+      "resultado": "EXITO",
+      "detalles": "Reserva confirmada para 2 pasajeros.",
+      "creado_en": "2026-11-20T06:55:00.000Z"
+    }
+  ]
+}
