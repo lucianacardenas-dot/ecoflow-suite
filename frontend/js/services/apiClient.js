@@ -38,28 +38,26 @@ class ApiClient {
         } catch {
           errorData = {
             error: {
-              codigo: 'HTTP_ERROR',
-              mensaje: `Error en la petición: ${response.status} ${response.statusText}`,
-              status: response.status
+              codigo: 'ERROR_HTTP',
+              mensaje: `Error en la solicitud: ${response.status} ${response.statusText}`,
+              detalles: []
             }
           };
         }
         throw errorData;
       }
 
-      // Si no hay contenido (ej. 204)
       if (response.status === 204) {
         return null;
       }
 
       return await response.json();
     } catch (err) {
-      // Error de red / JSON Server apagado (Escenario 5)
       if (err instanceof TypeError && err.message.includes('fetch')) {
         const networkError = {
           error: {
             codigo: 'ERROR_CONEXION_RED',
-            mensaje: 'No se pudo conectar con el servidor API (JSON Server en puerto 3000). Verifique que el servicio esté ejecutándose con "npx json-server db.json".',
+            mensaje: 'No se pudo conectar con el servidor API. Verifique que el backend esté activo.',
             detalles: [{ campo: 'red', mensaje: err.message }]
           }
         };
@@ -79,13 +77,6 @@ class ApiClient {
   post(endpoint, data) {
     return this.request(endpoint, {
       method: 'POST',
-      body: JSON.stringify(data)
-    });
-  }
-
-  put(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'PUT',
       body: JSON.stringify(data)
     });
   }
